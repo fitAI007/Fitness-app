@@ -1,456 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FitAI - Personal Fitness Coach</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  min-height:100vh;
-  background:#0a0a0a;
-  font-family:'Trebuchet MS',sans-serif;
-  color:#fff;
-  padding-bottom:60px;
-}
-.header {
-  background:#0a0a0a;
-  border-bottom:1px solid #1a1a1a;
-  padding:18px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-.logo-box {
-  width:36px; height:36px;
-  border-radius:10px;
-  background:linear-gradient(135deg,#a3e635,#4ade80);
-  display:flex; align-items:center;
-  justify-content:center;
-  font-size:18px; margin-right:10px;
-}
-.logo-row { display:flex; align-items:center; }
-.logo-title { font-weight:900; font-size:18px; letter-spacing:-0.5px; }
-.logo-sub { font-size:10px; color:#666; letter-spacing:2px; text-transform:uppercase; }
-.restart-btn {
-  background:#1a1a1a; border:1px solid #333;
-  color:#999; padding:8px 14px;
-  border-radius:8px; cursor:pointer; font-size:12px;
-}
-.container { max-width:480px; margin:0 auto; padding:24px 16px; }
-.step-label { font-size:11px; color:#a3e635; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px; }
-.step-title { font-size:26px; font-weight:900; line-height:1.1; margin-bottom:24px; }
-.step-title span { color:#a3e635; }
-.field-label { display:block; font-size:11px; color:#666; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
-.toggle-row { display:flex; gap:10px; margin-bottom:18px; }
-.toggle-btn {
-  flex:1; padding:12px; border-radius:10px;
-  border:1px solid #222; background:#111;
-  color:#666; cursor:pointer; font-size:13px; font-weight:600;
-  transition:all 0.2s;
-}
-.toggle-btn.active { border-color:#a3e635; background:rgba(163,230,53,0.1); color:#a3e635; }
-.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
-.input-wrap { position:relative; }
-.num-input {
-  width:100%; padding:14px 60px 14px 14px;
-  background:#111; border:1px solid #222;
-  border-radius:10px; color:#fff;
-  font-size:20px; font-weight:700; outline:none;
-}
-.num-input:focus { border-color:#a3e635; }
-.input-unit { position:absolute; right:14px; top:50%; transform:translateY(-50%); color:#444; font-size:12px; }
-.full-col { grid-column:1 / -1; }
-.tag-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
-.tag-btn {
-  padding:8px 16px; border-radius:8px;
-  border:1px solid #222; background:#111;
-  color:#555; cursor:pointer; font-size:12px; font-weight:600;
-  transition:all 0.2s;
-}
-.tag-btn.active { border-color:#a3e635; background:rgba(163,230,53,0.1); color:#a3e635; }
-.main-btn {
-  width:100%; padding:16px; border:none;
-  border-radius:12px; font-size:15px;
-  font-weight:900; cursor:pointer;
-  text-transform:uppercase; letter-spacing:1px;
-  transition:all 0.2s;
-}
-.main-btn.enabled { background:linear-gradient(135deg,#a3e635,#4ade80); color:#000; }
-.main-btn.disabled { background:#1a1a1a; color:#333; cursor:not-allowed; }
-.goals-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px; }
-.goal-btn {
-  padding:18px 14px; border-radius:14px;
-  border:2px solid #1a1a1a; background:#111;
-  cursor:pointer; text-align:left; transition:all 0.2s;
-}
-.goal-btn.active { border-color:#a3e635; background:rgba(163,230,53,0.08); }
-.goal-icon { font-size:26px; margin-bottom:8px; }
-.goal-label { font-weight:800; font-size:14px; margin-bottom:3px; color:#fff; }
-.goal-btn.active .goal-label { color:#a3e635; }
-.goal-desc { color:#555; font-size:12px; }
-.btn-row { display:flex; gap:10px; }
-.back-btn {
-  padding:16px 20px; background:#111;
-  border:1px solid #222; border-radius:12px;
-  color:#666; cursor:pointer; font-size:14px;
-}
-.spinner-wrap { text-align:center; margin-top:24px; }
-.spinner {
-  width:40px; height:40px;
-  border:3px solid #1a1a1a;
-  border-top:3px solid #a3e635;
-  border-radius:50%;
-  animation:spin 0.8s linear infinite;
-  margin:0 auto 12px;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-.spin-text { color:#555; font-size:13px; }
-.stats-bar { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:22px; }
-.stat-card {
-  background:#111; border-radius:12px;
-  padding:14px 8px; text-align:center;
-  border:1px solid #1a1a1a;
-}
-.stat-val { font-size:18px; font-weight:900; margin-bottom:2px; }
-.stat-key { font-size:9px; color:#444; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; }
-.stat-sub { font-size:10px; color:#666; }
-.summary-box {
-  background:rgba(163,230,53,0.06);
-  border:1px solid rgba(163,230,53,0.2);
-  border-radius:14px; padding:16px; margin-bottom:20px;
-}
-.summary-label { font-size:11px; color:#a3e635; text-transform:uppercase; letter-spacing:2px; margin-bottom:8px; }
-.summary-text { color:#ccc; line-height:1.6; font-size:14px; }
-.tabs { display:flex; gap:6px; margin-bottom:18px; background:#111; padding:6px; border-radius:12px; }
-.tab-btn {
-  flex:1; padding:10px 6px; border-radius:8px;
-  border:none; background:transparent;
-  color:#555; cursor:pointer; font-size:12px; font-weight:700;
-  transition:all 0.2s;
-}
-.tab-btn.active { background:linear-gradient(135deg,#a3e635,#4ade80); color:#000; }
-.day-card {
-  background:#111; border-radius:14px;
-  padding:16px; margin-bottom:12px;
-  border:1px solid #1a1a1a;
-}
-.day-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.day-name { font-weight:800; font-size:15px; }
-.day-focus {
-  background:rgba(163,230,53,0.1); color:#a3e635;
-  padding:4px 12px; border-radius:20px;
-  font-size:11px; font-weight:700;
-}
-.ex-row {
-  display:flex; justify-content:space-between;
-  align-items:flex-start; padding:10px 0;
-  border-bottom:1px solid #1a1a1a;
-}
-.ex-row:last-child { border-bottom:none; }
-.ex-name { font-weight:700; font-size:14px; margin-bottom:2px; }
-.ex-tip { color:#555; font-size:12px; }
-.ex-sets { color:#f97316; font-weight:800; font-size:13px; white-space:nowrap; margin-left:12px; }
-.meal-card {
-  background:#111; border-radius:14px;
-  padding:16px; margin-bottom:12px;
-  border:1px solid #1a1a1a;
-  display:flex; justify-content:space-between; align-items:center;
-}
-.meal-time { font-size:11px; color:#a3e635; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
-.meal-name { font-weight:700; font-size:15px; margin-bottom:4px; }
-.meal-macros { color:#555; font-size:12px; }
-.meal-emoji { font-size:28px; }
-.tips-box {
-  background:rgba(249,115,22,0.08);
-  border:1px solid rgba(249,115,22,0.2);
-  border-radius:12px; padding:14px; margin-top:4px;
-}
-.tips-label { font-size:11px; color:#f97316; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
-.tip-item { color:#888; font-size:13px; margin-bottom:6px; }
-.chat-box {
-  background:#111; border-radius:14px;
-  padding:16px; min-height:280px; max-height:360px;
-  overflow-y:auto; margin-bottom:12px;
-  border:1px solid #1a1a1a;
-}
-.chat-empty { text-align:center; padding-top:40px; }
-.chat-empty-icon { font-size:40px; margin-bottom:12px; }
-.chat-empty-text { color:#444; font-size:14px; }
-.quick-questions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; justify-content:center; }
-.quick-q {
-  background:#1a1a1a; border:1px solid #222;
-  color:#666; padding:8px 12px;
-  border-radius:20px; cursor:pointer; font-size:12px;
-}
-.msg-row { display:flex; margin-bottom:12px; }
-.msg-row.user { justify-content:flex-end; }
-.msg-row.ai { justify-content:flex-start; }
-.msg-bubble {
-  max-width:82%; padding:10px 14px;
-  border-radius:14px; font-size:13px; line-height:1.5;
-}
-.msg-bubble.user { background:linear-gradient(135deg,#a3e635,#4ade80); color:#000; }
-.msg-bubble.ai { background:#1a1a1a; color:#ccc; }
-.typing { display:flex; gap:4px; padding:10px 14px; background:#1a1a1a; border-radius:14px; width:fit-content; }
-.dot {
-  width:6px; height:6px; border-radius:50%;
-  background:#a3e635;
-}
-.dot1 { animation:bounce 0.8s ease-in-out 0s infinite; }
-.dot2 { animation:bounce 0.8s ease-in-out 0.15s infinite; }
-.dot3 { animation:bounce 0.8s ease-in-out 0.3s infinite; }
-@keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
-.chat-input-row { display:flex; gap:10px; }
-.chat-input {
-  flex:1; padding:14px 16px;
-  background:#111; border:1px solid #222;
-  border-radius:12px; color:#fff;
-  font-size:14px; outline:none;
-}
-.chat-input:focus { border-color:#a3e635; }
-.send-btn {
-  padding:14px 18px; border-radius:12px;
-  border:none; cursor:pointer; font-size:18px;
-  transition:all 0.2s;
-}
-.send-btn.enabled { background:linear-gradient(135deg,#a3e635,#4ade80); color:#000; }
-.send-btn.disabled { background:#1a1a1a; color:#333; cursor:not-allowed; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitForce — AI Fitness Coach</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo-row">
-    <div class="logo-box">⚡</div>
-    <div>
-      <div class="logo-title">FitAI</div>
-      <div class="logo-sub">Personal Coach</div>
-    </div>
-  </div>
-  <button class="restart-btn" id="restartBtn" style="display:none" onclick="restart()">↩ Restart</button>
-</div>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-logo">FIT<span>FORCE</span></div>
+    <ul class="nav-links">
+      <li><a href="#" class="nav-btn active" data-page="home">Home</a></li>
+      <li><a href="#" class="nav-btn" data-page="workouts">Workouts</a></li>
+      <li><a href="#" class="nav-btn" data-page="tracker">Tracker</a></li>
+      <li><a href="#" class="nav-btn" data-page="bmi">BMI</a></li>
+      <li><a href="#" class="nav-btn" data-page="diet">Diet</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger">&#9776;</button>
+  </nav>
 
-<div class="container" id="app">
-
-  <!-- STEP 0: Stats -->
-  <div id="step0">
-    <div class="step-label">Step 1 of 2</div>
-    <h1 class="step-title">Tell us about<br><span>yourself</span></h1>
-
-    <label class="field-label">Gender</label>
-    <div class="toggle-row" id="genderRow">
-      <button class="toggle-btn active" onclick="selectGender(this,'Male')">Male</button>
-      <button class="toggle-btn" onclick="selectGender(this,'Female')">Female</button>
-      <button class="toggle-btn" onclick="selectGender(this,'Other')">Other</button>
-    </div>
-
-    <div class="stats-grid">
-      <div>
-        <label class="field-label">Age</label>
-        <div class="input-wrap">
-          <input class="num-input" type="number" id="age" placeholder="25">
-          <span class="input-unit">years</span>
-        </div>
-      </div>
-      <div>
-        <label class="field-label">Weight</label>
-        <div class="input-wrap">
-          <input class="num-input" type="number" id="weight" placeholder="160">
-          <span class="input-unit">lbs</span>
-        </div>
-      </div>
-      <div class="full-col">
-        <label class="field-label">Height</label>
-        <div class="input-wrap">
-          <input class="num-input" type="number" id="height" placeholder="68">
-          <span class="input-unit">inches</span>
-        </div>
-      </div>
-    </div>
-
-    <label class="field-label">Dietary Preference</label>
-    <div class="tag-row" id="dietRow">
-      <button class="tag-btn active" onclick="selectDiet(this,'No Preference')">No Preference</button>
-      <button class="tag-btn" onclick="selectDiet(this,'Vegetarian')">Vegetarian</button>
-      <button class="tag-btn" onclick="selectDiet(this,'Vegan')">Vegan</button>
-      <button class="tag-btn" onclick="selectDiet(this,'Keto')">Keto</button>
-      <button class="tag-btn" onclick="selectDiet(this,'High Protein')">High Protein</button>
-    </div>
-
-    <button class="main-btn disabled" id="step0Btn" onclick="goToStep1()">Continue →</button>
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#" class="mob-btn" data-page="home">🏠 Home</a>
+    <a href="#" class="mob-btn" data-page="workouts">💪 Workouts</a>
+    <a href="#" class="mob-btn" data-page="tracker">📊 Tracker</a>
+    <a href="#" class="mob-btn" data-page="bmi">⚖️ BMI</a>
+    <a href="#" class="mob-btn" data-page="diet">🥗 Diet</a>
   </div>
 
-  <!-- STEP 1: Goal -->
-  <div id="step1" style="display:none">
-    <div class="step-label">Step 2 of 2</div>
-    <h1 class="step-title">What's your<br><span>goal?</span></h1>
+  <!-- ===== PAGES WRAPPER ===== -->
+  <main class="pages">
 
-    <div class="goals-grid" id="goalsGrid">
-      <button class="goal-btn" onclick="selectGoal(this,'lose_fat','Lose Fat')">
-        <div class="goal-icon">🔥</div>
-        <div class="goal-label">Lose Fat</div>
-        <div class="goal-desc">Burn calories & slim down</div>
-      </button>
-      <button class="goal-btn" onclick="selectGoal(this,'build_muscle','Build Muscle')">
-        <div class="goal-icon">💪</div>
-        <div class="goal-label">Build Muscle</div>
-        <div class="goal-desc">Gain strength & size</div>
-      </button>
-      <button class="goal-btn" onclick="selectGoal(this,'stay_fit','Stay Fit')">
-        <div class="goal-icon">⚡</div>
-        <div class="goal-label">Stay Fit</div>
-        <div class="goal-desc">Maintain & feel great</div>
-      </button>
-      <button class="goal-btn" onclick="selectGoal(this,'run_more','Run More')">
-        <div class="goal-icon">🏃</div>
-        <div class="goal-label">Run More</div>
-        <div class="goal-desc">Endurance & cardio</div>
-      </button>
-    </div>
+    <!-- ====== HOME PAGE ====== -->
+    <section class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-tag">Your Personal AI Coach</div>
+        <h1 class="hero-title">TRAIN HARD.<br/><span>LIVE STRONG.</span></h1>
+        <p class="hero-sub">Track workouts, follow plans, calculate BMI, and eat right — all in one app.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" data-page="workouts">Start Workout →</button>
+          <button class="btn-ghost" data-page="bmi">Check BMI</button>
+        </div>
+      </div>
 
-    <label class="field-label">Fitness Level</label>
-    <div class="toggle-row" id="levelRow" style="margin-bottom:24px">
-      <button class="toggle-btn active" onclick="selectLevel(this,'Beginner')">Beginner</button>
-      <button class="toggle-btn" onclick="selectLevel(this,'Intermediate')">Intermediate</button>
-      <button class="toggle-btn" onclick="selectLevel(this,'Advanced')">Advanced</button>
-    </div>
+      <!-- Stats Bar -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-num" id="totalWorkouts">0</span>
+          <span class="stat-label">Workouts Done</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="totalCalories">0</span>
+          <span class="stat-label">Calories Burned</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="currentStreak">0</span>
+          <span class="stat-label">Day Streak 🔥</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="totalMinutes">0</span>
+          <span class="stat-label">Minutes Trained</span>
+        </div>
+      </div>
 
-    <div class="btn-row">
-      <button class="back-btn" onclick="goToStep0()">← Back</button>
-      <button class="main-btn disabled" id="step1Btn" onclick="generatePlan()" style="flex:1">🚀 Generate My Plan</button>
-    </div>
+      <!-- Today's Plan -->
+      <div class="section-title">Today's Plan</div>
+      <div class="today-grid">
+        <div class="today-card" onclick="goToPage('workouts')">
+          <div class="today-icon">🏋️</div>
+          <div class="today-info">
+            <div class="today-name">Upper Body Blast</div>
+            <div class="today-meta">8 exercises • 40 min</div>
+          </div>
+          <div class="today-arrow">→</div>
+        </div>
+        <div class="today-card" onclick="goToPage('diet')">
+          <div class="today-icon">🥗</div>
+          <div class="today-info">
+            <div class="today-name">High Protein Diet</div>
+            <div class="today-meta">1800 kcal target</div>
+          </div>
+          <div class="today-arrow">→</div>
+        </div>
+      </div>
 
-    <div id="loadingDiv" style="display:none" class="spinner-wrap">
-      <div class="spinner"></div>
-      <p class="spin-text">AI is crafting your personalized plan...</p>
-    </div>
-  </div>
+      <!-- Quick Exercise Cards -->
+      <div class="section-title">Quick Start</div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="goToPage('workouts')">
+          <div class="qc-emoji">🔥</div>
+          <div class="qc-name">HIIT</div>
+          <div class="qc-time">20 min</div>
+        </div>
+        <div class="quick-card" onclick="goToPage('workouts')">
+          <div class="qc-emoji">💪</div>
+          <div class="qc-name">Strength</div>
+          <div class="qc-time">45 min</div>
+        </div>
+        <div class="quick-card" onclick="goToPage('workouts')">
+          <div class="qc-emoji">🧘</div>
+          <div class="qc-name">Yoga</div>
+          <div class="qc-time">30 min</div>
+        </div>
+        <div class="quick-card" onclick="goToPage('workouts')">
+          <div class="qc-emoji">🏃</div>
+          <div class="qc-name">Cardio</div>
+          <div class="qc-time">25 min</div>
+        </div>
+      </div>
+    </section>
 
-  <!-- STEP 2: Plan -->
-  <div id="step2" style="display:none">
-    <div class="stats-bar" id="statsBar"></div>
-    <div class="summary-box">
-      <div class="summary-label">⚡ Your Assessment</div>
-      <div class="summary-text" id="summaryText"></div>
-    </div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab(this,'workout')">💪 Workout</button>
-      <button class="tab-btn" onclick="switchTab(this,'meals')">🥗 Meals</button>
-      <button class="tab-btn" onclick="switchTab(this,'chat')">🤖 Ask AI</button>
-    </div>
-    <div id="workoutTab"></div>
-    <div id="mealsTab" style="display:none"></div>
-    <div id="chatTab" style="display:none">
-      <div class="chat-box" id="chatBox">
-        <div class="chat-empty">
-          <div class="chat-empty-icon">🤖</div>
-          <div class="chat-empty-text">Ask me anything about your fitness!</div>
-          <div class="quick-questions">
-            <button class="quick-q" onclick="setQ('Best time to workout?')">Best time to workout?</button>
-            <button class="quick-q" onclick="setQ('How much water daily?')">How much water daily?</button>
-            <button class="quick-q" onclick="setQ('Can I eat carbs?')">Can I eat carbs?</button>
+    <!-- ====== WORKOUTS PAGE ====== -->
+    <section class="page" id="page-workouts">
+      <div class="page-header">
+        <h2 class="page-title">Workout Plans</h2>
+        <p class="page-sub">Choose your workout and start training</p>
+      </div>
+
+      <!-- Filter buttons -->
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="strength">Strength</button>
+        <button class="filter-btn" data-filter="cardio">Cardio</button>
+        <button class="filter-btn" data-filter="yoga">Yoga</button>
+      </div>
+
+      <!-- Workout Cards -->
+      <div class="workout-grid" id="workoutGrid">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Workout Detail Modal -->
+      <div class="modal-overlay" id="workoutModal">
+        <div class="modal">
+          <button class="modal-close" id="closeModal">✕</button>
+          <div id="modalContent"></div>
+          <button class="btn-primary full-btn" id="startWorkoutBtn">Start This Workout ⚡</button>
+        </div>
+      </div>
+
+      <!-- Active Workout Timer -->
+      <div class="timer-bar" id="timerBar">
+        <div class="timer-info">
+          <span id="timerWorkoutName">Workout</span>
+          <span class="timer-clock" id="timerClock">00:00</span>
+        </div>
+        <div class="timer-btns">
+          <button class="tbtn" id="timerPause">⏸</button>
+          <button class="tbtn red" id="timerStop">⏹</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== TRACKER PAGE ====== -->
+    <section class="page" id="page-tracker">
+      <div class="page-header">
+        <h2 class="page-title">Progress Tracker</h2>
+        <p class="page-sub">Log your daily workouts and track progress</p>
+      </div>
+
+      <!-- Log Form -->
+      <div class="log-form">
+        <div class="form-title">Log Today's Workout</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Exercise Name</label>
+            <input type="text" id="logExercise" placeholder="e.g. Push Ups" />
+          </div>
+          <div class="form-group">
+            <label>Sets</label>
+            <input type="number" id="logSets" placeholder="3" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Reps</label>
+            <input type="number" id="logReps" placeholder="12" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Duration (min)</label>
+            <input type="number" id="logDuration" placeholder="30" min="1" />
           </div>
         </div>
+        <div class="form-group full">
+          <label>Calories Burned</label>
+          <input type="number" id="logCalories" placeholder="250" min="0" />
+        </div>
+        <button class="btn-primary" onclick="logWorkout()">+ Add to Log</button>
       </div>
-      <div class="chat-input-row">
-        <input class="chat-input" id="chatInput" placeholder="Ask your AI coach..." onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="send-btn disabled" id="sendBtn" onclick="sendChat()">→</button>
+
+      <!-- Log History -->
+      <div class="section-title">Workout History</div>
+      <div id="logHistory">
+        <div class="empty-state">No workouts logged yet. Start tracking! 💪</div>
       </div>
-    </div>
-  </div>
-</div>
+    </section>
 
-<script>
-const API_KEY = "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"
-let state = { gender:"Male", diet:"No Preference", level:"Beginner", goal:"", goalLabel:"", plan:null, chat:[] };
+    <!-- ====== BMI PAGE ====== -->
+    <section class="page" id="page-bmi">
+      <div class="page-header">
+        <h2 class="page-title">BMI Calculator</h2>
+        <p class="page-sub">Know your Body Mass Index</p>
+      </div>
 
-// Input listeners
-["age","weight","height"].forEach(id => {
-  document.getElementById(id).addEventListener("input", checkStep0);
-});
-document.getElementById("chatInput").addEventListener("input", function() {
-  const btn = document.getElementById("sendBtn");
-  btn.className = "send-btn " + (this.value.trim() ? "enabled" : "disabled");
-});
+      <div class="bmi-card">
+        <div class="bmi-form">
+          <div class="form-group">
+            <label>Height (cm)</label>
+            <input type="number" id="bmiHeight" placeholder="170" />
+          </div>
+          <div class="form-group">
+            <label>Weight (kg)</label>
+            <input type="number" id="bmiWeight" placeholder="65" />
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" id="bmiAge" placeholder="25" />
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select id="bmiGender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary full-btn" onclick="calculateBMI()">Calculate BMI →</button>
 
-function checkStep0() {
-  const ok = document.getElementById("age").value && document.getElementById("weight").value && document.getElementById("height").value;
-  document.getElementById("step0Btn").className = "main-btn " + (ok ? "enabled" : "disabled");
-}
+        <div class="bmi-result" id="bmiResult" style="display:none">
+          <div class="bmi-circle">
+            <div class="bmi-value" id="bmiValue">--</div>
+            <div class="bmi-label" id="bmiLabel">--</div>
+          </div>
+          <div class="bmi-meter">
+            <div class="meter-bar">
+              <div class="meter-fill" id="meterFill"></div>
+              <div class="meter-marker" id="meterMarker"></div>
+            </div>
+            <div class="meter-labels">
+              <span>Under</span><span>Normal</span><span>Over</span><span>Obese</span>
+            </div>
+          </div>
+          <div class="bmi-advice" id="bmiAdvice"></div>
+        </div>
+      </div>
 
-function selectGender(el, val) {
-  document.querySelectorAll("#genderRow .toggle-btn").forEach(b => b.className = "toggle-btn");
-  el.className = "toggle-btn active"; state.gender = val;
-}
-function selectDiet(el, val) {
-  document.querySelectorAll("#dietRow .tag-btn").forEach(b => b.className = "tag-btn");
-  el.className = "tag-btn active"; state.diet = val;
-}
-function selectLevel(el, val) {
-  document.querySelectorAll("#levelRow .toggle-btn").forEach(b => b.className = "toggle-btn");
-  el.className = "toggle-btn active"; state.level = val;
-}
-function selectGoal(el, id, label) {
-  document.querySelectorAll("#goalsGrid .goal-btn").forEach(b => b.className = "goal-btn");
-  el.className = "goal-btn active"; state.goal = id; state.goalLabel = label;
-  document.getElementById("step1Btn").className = "main-btn enabled";
-}
-function goToStep1() {
-  if (!document.getElementById("age").value) return;
-  document.getElementById("step0").style.display = "none";
-  document.getElementById("step1").style.display = "block";
-}
-function goToStep0() {
-  document.getElementById("step1").style.display = "none";
-  document.getElementById("step0").style.display = "block";
-}
-function switchTab(el, tab) {
-  document.querySelectorAll(".tab-btn").forEach(b => b.className = "tab-btn");
-  el.className = "tab-btn active";
-  ["workout","meals","chat"].forEach(t => {
-    document.getElementById(t+"Tab").style.display = t===tab ? "block" : "none";
-  });
-}
+      <!-- BMI Scale Reference -->
+      <div class="section-title">BMI Scale</div>
+      <div class="bmi-scale">
+        <div class="scale-item underweight">
+          <span class="scale-range">&lt; 18.5</span>
+          <span class="scale-name">Underweight</span>
+        </div>
+        <div class="scale-item normal">
+          <span class="scale-range">18.5 – 24.9</span>
+          <span class="scale-name">Normal ✓</span>
+        </div>
+        <div class="scale-item overweight">
+          <span class="scale-range">25 – 29.9</span>
+          <span class="scale-name">Overweight</span>
+        </div>
+        <div class="scale-item obese">
+          <span class="scale-range">&gt; 30</span>
+          <span class="scale-name">Obese</span>
+        </div>
+      </div>
+    </section>
 
-async function generatePlan() {
-  if (!state.goal) return;
-  document.getElementById("loadingDiv").style.display = "block";
-  document.getElementById("step1Btn").className = "main-btn disabled";
-  const age = document.getElementById("age").value;
-  const weight = document.getElementById("weight").value;
-  const height = document.getElementById("height").value;
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method:"POST",
-      headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body: JSON.stringify({
-        model:"claude-sonnet-4-20250514", max_tokens:1000,
-        messages:[{role:"user",content:`You are an expert fitness coach. Create a personalized fitness plan.
-User: ${age}yo ${state.gender}, ${weight}lbs, ${height}in tall, goal: ${state.goalLabel}, level: ${state.level}, diet: ${state.diet}.
-Respond ONLY in this exact JSON (no markdown):
-{"bmi":"number","bmi_category":"Normal/Overweight/Underweight/Obese","daily_calories":"number","summary":"2 sentence motivational summary","workout":[{"day":"Monday","focus":"area","exercises":[{"name":"ex","sets":"3x10","tip":"tip"}]},{"day":"Wednesday","focus":"area","exercises":[{"name":"ex","sets":"3x12","tip":"tip"}]},{"day":"Friday","focus":"area","exercises":[{"name":"ex","sets":"3x10","tip":"tip"}]},{"day":"Sunday","focus":"Recovery","exercises":[{"name":"ex","sets":"20min","tip":"tip"}]}],"meals":[{"time":"Breakfast 7AM","meal":"name","calories":"num","protein":"num"},{"time":"Lunch 12PM","meal":"name","calories":"num","protein":"num"},{"time":"Snack 3PM","meal":"name","calories":"num","protein":"num"},{"time":"Dinner 7PM","meal":"name","calories":"num","protein":"num"}],"tips":["tip1","tip2","tip3"]}`}]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content||[]).map(b=>b.text||"").join("");
-    state.plan = JSON.parse(text.replace(/```json|```/g,"").trim());
-    renderPlan();
-    document.getElementById("step1").style.display = "none";
-    document.getElementById("step2").style.display = "block";
-    document.getElementById("restartBtn").style.display = "block";
-  } catch(e) { alert("Error! Check your API key in the code."); }
-  document.getElementById("loadingDiv").style.display = "none";
-  document.getElementById("step1Btn").className = "main-btn enabled";
-}
+    <!-- ====== DIET PAGE ====== -->
+    <section class="page" id="page-diet">
+      <div class="page-header">
+        <h2 class="page-title">Diet Plans</h2>
+        <p class="page-sub">Eat right to train right</p>
+      </div>
 
-function renderPlan() {
-  const p = state.plan;
-  const bmiColor = parseFloat(p.bmi)<18.5?"#60a5fa":parseFloat(p.bmi)<25?"#4ade80":parseFloat(p.bmi)<30?"#fbbf24":"#f87171";
-  document.getElementById("statsBar").innerHTML = `
-    <div class="stat-card"><div class="stat-val" style="color:${bmiColor}">${p.bmi}</div><div class="stat-key">BMI</div><div class="stat-sub">${p.bmi_category}</div></div>
-    <div class="stat-card"><div class="stat-val" style="color:#f97316">${p.daily_calories}</div><div class="stat-key">Daily Cal</div><div class="stat-sub">calories</div></div>
-    <div
+      <!-- Calorie Counter -->
+      <div class="calorie-counter">
+        <div class="calorie-top">
+          <div>
+            <div class="cal-title">Daily Calorie Goal</div>
+            <div class="cal-sub">Track your intake</div>
+          </div>
+          <div class="cal-number" id="calDisplay">0 / 2000 kcal</div>
+        </div>
+        <div class="cal-bar-outer">
+          <div class="cal-bar-fill" id="calBarFill" style="width:0%"></div>
+        </div>
+        <div class="cal-input-row">
+          <input type="number" id="calInput" placeholder="Add calories..." />
+          <button class="btn-primary small" onclick="addCalories()">+ Add</button>
+          <button class="btn-ghost small" onclick="resetCalories()">Reset</button>
+        </div>
+      </div>
+
+      <!-- Diet Plan Tabs -->
+      <div class="diet-tabs">
+        <button class="diet-tab active" data-plan="weightloss">Weight Loss</button>
+        <button class="diet-tab" data-plan="muscle">Muscle Gain</button>
+        <button class="diet-tab" data-plan="maintain">Maintain</button>
+      </div>
+
+      <div class="diet-plan-content" id="dietPlanContent">
+        <!-- Injected by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Nav (Mobile) -->
+  <nav class="bottom-nav">
+    <button class="bnav-btn active" data-page="home">🏠<span>Home</span></button>
+    <button class="bnav-btn" data-page="workouts">💪<span>Train</span></button>
+    <button class="bnav-btn" data-page="tracker">📊<span>Track</span></button>
+    <button class="bnav-btn" data-page="bmi">⚖️<span>BMI</span></button>
+    <button class="bnav-btn" data-page="diet">🥗<span>Diet</span></button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
